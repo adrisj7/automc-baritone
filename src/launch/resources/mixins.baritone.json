@@ -30,6 +30,10 @@
     "MixinStateImplementation",
     "MixinTabCompleter",
     "MixinVboRenderList",
-    "MixinWorldClient"
+    "MixinWorldClient",
+    "AutoMCMixinEntityPlayerSP",
+    "AutoMCMixinMinecraft",
+    "AutoMCMixinBlockChest",
+    "AutoMCMixinGuiScreen"
   ]
 }

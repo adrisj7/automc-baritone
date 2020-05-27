@@ -1,0 +1,17 @@
+{
+  /*
+    workMap tells us how many blocks we'd travel to get one unit of an item
+        from a chest or furnace.
+    defaultWork tells us the default work value.
+  */
+  "defaultWork": 10,
+  "workMap": {
+    "dirt": 2,
+    "stick": 2,
+    "planks": 5,
+    "cobblestone": 2,
+    "iron_ingot": 100,
+    "diamond": 400,
+    "obsidian": 400
+  }
+}
