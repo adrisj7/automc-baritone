@@ -68,7 +68,8 @@ Running Baritone:
 $ gradlew runClient
 ```
 
-For information on how to build baritone, see [Building Baritone](#building-baritone)
+For information on how to build baritone, see Building Baritone (link removed)
+
 
 ## IntelliJ
 - Open the project in IntelliJ as a Gradle project

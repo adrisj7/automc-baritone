@@ -17,22 +17,6 @@
 
 package baritone;
 
-import baritone.api.BaritoneAPI;
-import baritone.api.IBaritone;
-import baritone.api.Settings;
-import baritone.api.event.listener.IEventBus;
-import baritone.api.utils.Helper;
-import baritone.api.utils.IPlayerContext;
-import baritone.behavior.*;
-import baritone.cache.WorldProvider;
-import baritone.event.GameEventHandler;
-import baritone.process.*;
-import baritone.selection.SelectionManager;
-import baritone.utils.*;
-import baritone.command.manager.CommandManager;
-import baritone.utils.player.PrimaryPlayerContext;
-import net.minecraft.client.Minecraft;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,6 +24,37 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import baritone.api.BaritoneAPI;
+import baritone.api.IBaritone;
+import baritone.api.Settings;
+import baritone.api.event.listener.IEventBus;
+import baritone.api.utils.Helper;
+import baritone.api.utils.IPlayerContext;
+import baritone.behavior.Behavior;
+import baritone.behavior.InventoryBehavior;
+import baritone.behavior.LookBehavior;
+import baritone.behavior.MemoryBehavior;
+import baritone.behavior.PathingBehavior;
+import baritone.cache.WorldProvider;
+import baritone.command.manager.CommandManager;
+import baritone.event.GameEventHandler;
+import baritone.process.BackfillProcess;
+import baritone.process.BuilderProcess;
+import baritone.process.CustomGoalProcess;
+import baritone.process.ExploreProcess;
+import baritone.process.FarmProcess;
+import baritone.process.FollowProcess;
+import baritone.process.GetToBlockProcess;
+import baritone.process.MineProcess;
+import baritone.selection.SelectionManager;
+import baritone.utils.BaritoneAutoTest;
+import baritone.utils.BlockStateInterface;
+import baritone.utils.GuiClick;
+import baritone.utils.InputOverrideHandler;
+import baritone.utils.PathingControlManager;
+import baritone.utils.player.PrimaryPlayerContext;
+import net.minecraft.client.Minecraft;
 
 /**
  * @author Brady

@@ -77,11 +77,18 @@ public class CachedChest implements ICachedContainer {
 		} else {
 			nameSlotMap.get(id).addItems(stack.getCount());
 		}
-		Logger.debug(this, "Add items: " + id + " now has " + nameSlotMap.get(id).getCount());
+		/*
+		if (nameSlotMap.containsKey(id)) {
+			Logger.debug(this, "Add items: " + id + " now has " + nameSlotMap.get(id).getCount());
+		}
+		*/
 	}
 
 	@Override
 	public int hashCode() {
+		if (pos == null) {
+			return 0;
+		}
 		// No need to try items, usually the position and open time is unique enough.
 		return pos.hashCode();// * 6132924 + (int)openedTime;
 	}
@@ -106,9 +113,9 @@ public class CachedChest implements ICachedContainer {
 	}
 
 	@Override
-	public double getScore(Vec3d playerPos, Item item, int maxNeeded) {
+	public double getScore(Vec3d playerPos, String item, int maxNeeded) {
 		double distanceSqr = playerPos.squareDistanceTo(getPosition().getX(), getPosition().getY(), getPosition().getZ());
-		int weHave = itemCount(ItemUtil.getItemId(item));
+		int weHave = itemCount(item);
 		if (weHave > maxNeeded) weHave = maxNeeded;
 		double specificValue = weHave * AutoMC.getAutoMC().itemWorkDictionary.getWork(item);
 		//Logger.log("Has: " + weHave + ", dist Sqr: " + distanceSqr + ", sp: " + specificValue + ", score: " + (specificValue*specificValue - distanceSqr) );

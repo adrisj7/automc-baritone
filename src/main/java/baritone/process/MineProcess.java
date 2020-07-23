@@ -17,12 +17,32 @@
 
 package baritone.process;
 
+import static baritone.api.pathing.movement.ActionCosts.COST_INF;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import baritone.Baritone;
-import baritone.api.pathing.goals.*;
+import baritone.api.pathing.goals.Goal;
+import baritone.api.pathing.goals.GoalBlock;
+import baritone.api.pathing.goals.GoalComposite;
+import baritone.api.pathing.goals.GoalRunAway;
+import baritone.api.pathing.goals.GoalTwoBlocks;
 import baritone.api.process.IMineProcess;
 import baritone.api.process.PathingCommand;
 import baritone.api.process.PathingCommandType;
-import baritone.api.utils.*;
+import baritone.api.utils.BetterBlockPos;
+import baritone.api.utils.BlockOptionalMeta;
+import baritone.api.utils.BlockOptionalMetaLookup;
+import baritone.api.utils.BlockUtils;
+import baritone.api.utils.Rotation;
+import baritone.api.utils.RotationUtils;
 import baritone.api.utils.input.Input;
 import baritone.cache.CachedChunk;
 import baritone.cache.WorldScanner;
@@ -39,11 +59,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static baritone.api.pathing.movement.ActionCosts.COST_INF;
 
 /**
  * Mine blocks of a certain type
@@ -65,6 +80,7 @@ public final class MineProcess extends BaritoneProcessHelper implements IMinePro
 
     public MineProcess(Baritone baritone) {
         super(baritone);
+        this.blacklist = new ArrayList<>();
     }
 
     @Override
@@ -434,12 +450,16 @@ public final class MineProcess extends BaritoneProcessHelper implements IMinePro
         }
         this.desiredQuantity = quantity;
         this.knownOreLocations = new ArrayList<>();
-        this.blacklist = new ArrayList<>();
+        //this.blacklist = new ArrayList<>();
         this.branchPoint = null;
         this.branchPointRunaway = null;
         this.anticipatedDrops = new HashMap<>();
         if (filter != null) {
             rescan(new ArrayList<>(), new CalculationContext(baritone));
         }
+    }
+
+    public void resetBlacklist() {
+    	this.blacklist = new ArrayList<>();
     }
 }

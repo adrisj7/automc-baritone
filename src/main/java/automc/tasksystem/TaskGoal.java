@@ -1,5 +1,6 @@
 package automc.tasksystem;
 
+import automc.Logger;
 import automc.definitions.LoopState;
 
 /**
@@ -44,6 +45,10 @@ public abstract class TaskGoal extends Task {
 			if (currentSubTask != null) {
 				log("Sub interrupted: " + currentSubTask + " in place of new: " + sub);
 				currentSubTask.interrupt();
+			} else {
+				if (sub != null) {
+					log("New sub: " + sub);
+				}
 			}
 			currentSubTask = sub;
 
@@ -61,13 +66,13 @@ public abstract class TaskGoal extends Task {
 			if (currentSubTask.runUpdate(state)) {
 				log("Sub finished: " + currentSubTask);
 				// We updated and FINISHED the current sub task.
-				currentSubTask.onFinish();
-				currentSubTask = null;
+				//currentSubTask.onFinish();
+				//currentSubTask = null;
 			}
 	
 			// The current sub task failed to meet its conditions.
 			if (currentSubTask != null && !currentSubTask.areConditionsMet()) {
-				log("Sub finished: " + currentSubTask);
+				log("Sub finished: (bad condition): " + currentSubTask);
 				currentSubTask.interrupt();
 				currentSubTask = null;
 			}
@@ -77,7 +82,23 @@ public abstract class TaskGoal extends Task {
 	@Override
 	protected void onInterrupt() {
 		// We EXPECT our goal task to be interrupted all the time as other goals interrupt this one (Usually).
+		if (currentSubTask != null) {
+			log("Sub interrupted/interrupted: " + currentSubTask);
+			currentSubTask.interrupt();
+			currentSubTask = null;
+		}
+		stop();
 		onFinish();
+	}
+
+	@Override
+	protected void onFinish() {
+		if (currentSubTask != null) {
+			currentSubTask.interrupt();
+			log("Sub interrupted/finished: " + currentSubTask);
+			currentSubTask = null;
+		}
+		onGoalFinish();
 	}
 
 	private boolean areTasksEqual(Task t1, Task t2) {
@@ -92,13 +113,30 @@ public abstract class TaskGoal extends Task {
 	protected abstract Task getSubTask();
 
 	protected abstract void onGoalInit();
+	protected abstract void onGoalFinish();
+	
 	@Override
-	protected abstract boolean isDone();
-	@Override
-	protected abstract void onFinish();
+	public
+	abstract boolean isDone();
 	// Has the same outcome as onFinish, but it's nice to split up the methods so the implementations are easier to read.
 	@Override
 	protected abstract boolean areConditionsMet();
 
 
+	public void printTaskChain() {
+		Logger.log(this);
+		Task t = currentSubTask;
+		String spaces = "";
+		while (t != null) {
+			spaces += "  ";
+			
+			Logger.log(spaces + t);
+			if (t instanceof TaskGoal) {
+				TaskGoal tg = (TaskGoal) t;
+				t = tg.currentSubTask;
+			} else {
+				t = null;
+			}
+		}
+	}
 }

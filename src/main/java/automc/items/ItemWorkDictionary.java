@@ -17,7 +17,7 @@ import net.minecraft.item.Item;
 /**
  * 		When looking for items in chests & furnaces, we are willing to travel further for some items than others.
  */
-
+ 
 public class ItemWorkDictionary {
 
 	private static final Path WORK_DICTIONARY_PATH = getMinecraft().gameDir.toPath().resolve("automc").resolve("item_work_dictionary.json");
@@ -25,31 +25,35 @@ public class ItemWorkDictionary {
 	// If data is not found at all, just use this.
 	private static final double DEFAULT_WORK_VALUE = 10;
 
+	// Used to calculate how many ticks we'd be worth spending to get to an item.
+	private static final double DEFAULT_TRAVEL_BLOCKS_PER_SECOND = 4.3 * 1.5; // Add more weight to it.
+
 	ItemWorkData data = null;
 
 	public ItemWorkDictionary() {
-		copyOverDefaults("/automc/resources/item_work_dictionary.json", WORK_DICTIONARY_PATH);
+		
 	}
-	
+
 	public void init() {
 		load();
 	}
 
 	// TODO: Standardize.
-	private static void copyOverDefaults(String defaultResourcePath, Path realPath) {
+	private void copyOverDefaults(String defaultResourcePath, Path realPath) {
 		if (!Files.exists(realPath)) {
 			realPath.toFile().getParentFile().mkdirs();
-			try(InputStream in = ItemWorkDictionary.class.getResourceAsStream(defaultResourcePath)) {
+			try(InputStream in = getClass().getResourceAsStream(defaultResourcePath)) {
 				if (in == null) throw new IOException();
 				Files.copy(in, realPath);
 			} catch (IOException e) {
-				Logger.logError("Failed to copy over default file to the real inecraft path. From: " + defaultResourcePath + ", to: " + realPath);
+				Logger.logError("Failed to copy over default file to the real minecraft path. From: " + defaultResourcePath + ", to: " + realPath);
 				e.printStackTrace();
 			}
 		}
 	}
 
 	private void load() {
+		copyOverDefaults("/automc_resources/item_work_dictionary.json", WORK_DICTIONARY_PATH);
 		try {
 			data = SettingsUtil.readJson(WORK_DICTIONARY_PATH, ItemWorkData.class);
 			data.onPostSerialize();
@@ -65,6 +69,14 @@ public class ItemWorkDictionary {
 	}
 	public double getWork(String item) {
 		return getWork(ItemUtil.getItem(item));
+	}
+
+	public double getWorkTicks(Item item) {
+		double baseSpeed = DEFAULT_TRAVEL_BLOCKS_PER_SECOND / 20.0; // (blocks / sec) / (ticks / sec) = (blocks / tick)
+		return getWork(item) / baseSpeed; // blocks / (blocks / tick) = ticks
+	}
+	public double getWorkTicks(String item) {
+		return getWorkTicks(ItemUtil.getItem(item));
 	}
 
 	static class ItemWorkData {

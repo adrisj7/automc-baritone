@@ -1,10 +1,10 @@
 package automc.tasksystem.tasks.resources;
 
 import automc.AutoMC;
+import automc.Logger;
 import automc.definitions.MiningRequirement;
 import automc.tasksystem.Task;
 import automc.tasksystem.tasks.CraftRecipeInHandTask;
-import automc.tasksystem.tasks.MineBlockTask;
 import automc.tasksystem.tasks.ResourceTask;
 import automc.utility.ItemUtil;
 import net.minecraft.item.crafting.IRecipe;
@@ -24,16 +24,17 @@ public class CollectPlanksTask extends ResourceTask {
 			return new CraftRecipeInHandTask(logRecipe);
 		}
 		// We need to punch trees or wood
-		return new MineBlockTask(new String[] {"log", "planks"}, new int[] {1, 4}, MiningRequirement.HAND);
+		int req = requiredAmounts[0];
+		return new MineBlockTask(new String[] {"log", "planks"}, new int[] {(int)Math.ceil((double)req/4.0), req}, MiningRequirement.HAND);
 	}
 
 	@Override
-	protected void onGoalInit() {
+	protected void onResourceGoalInit() {
 		// Nothing.
 	}
 
 	@Override
-	protected void onFinish() {
+	protected void onResourceGoalFinish() {
 		// Nothing.
 	}
 

@@ -49,7 +49,7 @@ public final class CachedChunk {
             Blocks.EMERALD_BLOCK,
 
             Blocks.ENDER_CHEST,
-            Blocks.FURNACE,
+            //Blocks.FURNACE, // TODO: Sometimes furnaces just don't work, so I disabled this.
             Blocks.CHEST,
             Blocks.TRAPPED_CHEST,
             Blocks.END_PORTAL,

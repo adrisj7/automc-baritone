@@ -2,6 +2,7 @@ package automc.containers;
 
 import automc.AutoMC;
 import automc.Logger;
+import automc.utility.ItemUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
@@ -70,6 +71,7 @@ public class ContainerHandler {
 			Logger.debug(this, "Opened chest.");
 			containers.onChestModified(lastOpenContainer, lastOpenContainerPos);
 			chestOpen = true;
+			lastOpenContainer = null; // This stops it from looping for some reason...
 		}
 		
 		if (!AutoMC.getAutoMC().isInGame() || !(Minecraft.getMinecraft().player.openContainer instanceof ContainerChest)) {
@@ -77,8 +79,12 @@ public class ContainerHandler {
 		}
 	}
 
-	public ICachedContainer getBestContainerWith(Item item, int maxNeeded) {
+	public ICachedContainer getBestContainerWith(String item, int maxNeeded) {
 		return containers.getBestContainerWith(item, maxNeeded);
+	}
+
+	public ICachedContainer getBestContainerWith(Item item, int maxNeeded) {
+		return containers.getBestContainerWith(ItemUtil.getItemId(item), maxNeeded);
 	}
 
 	public void load() {

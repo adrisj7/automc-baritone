@@ -19,4 +19,5 @@ public class TestCommands {
 		player.inventory.moveItems(ContainerType.PLAYER, 38, 3, 1);
 		player.inventory.moveItems(ContainerType.PLAYER, 39, 4, 1);
 	}
+
 }

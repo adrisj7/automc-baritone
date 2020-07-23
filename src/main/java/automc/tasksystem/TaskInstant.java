@@ -13,7 +13,7 @@ public abstract class TaskInstant extends Task {
 	}
 
 	@Override
-	protected boolean isDone() {
+	public boolean isDone() {
 		return true;
 	}
 

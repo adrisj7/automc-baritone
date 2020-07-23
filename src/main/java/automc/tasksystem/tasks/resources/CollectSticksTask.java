@@ -7,6 +7,8 @@ import automc.tasksystem.tasks.ResourceTask;
 import automc.utility.ItemUtil;
 import net.minecraft.item.crafting.IRecipe;
 
+// This is already handled by CollectRecipeAndCraftTask.
+@Deprecated()
 public class CollectSticksTask extends ResourceTask {
 
 	static IRecipe stickRecipe = ItemUtil.createPureShapedRecipe(1, 2, "planks", "planks");
@@ -28,12 +30,12 @@ public class CollectSticksTask extends ResourceTask {
 	}
 
 	@Override
-	protected void onGoalInit() {
+	protected void onResourceGoalInit() {
 		// Nothing.
 	}
 
 	@Override
-	protected void onFinish() {
+	protected void onResourceGoalFinish() {
 		// Nothing.
 	}
 

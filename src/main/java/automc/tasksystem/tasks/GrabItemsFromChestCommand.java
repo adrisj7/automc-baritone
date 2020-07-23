@@ -18,6 +18,7 @@ public class GrabItemsFromChestCommand extends ResourceTask {
 	
 	public GrabItemsFromChestCommand(Item item, int requiredAmount) {
 		super(item, requiredAmount);
+		Logger.log("Grabbing: " + ItemUtil.getItemId(item) + ", " + requiredAmount);
 	}
 	public GrabItemsFromChestCommand(String item, int requiredAmount) {
 		super(item, requiredAmount);
@@ -56,7 +57,7 @@ public class GrabItemsFromChestCommand extends ResourceTask {
 	}
 
 	@Override
-	protected void onGoalInit() {
+	protected void onResourceGoalInit() {
 		// Maximize based on how many items we NEED LEFT, not based on how many we NEED TOTAL.
 		int remaining = requiredAmounts[0] - AutoMC.getAutoMC().player.inventory.getItemCount(targetItems[0]); 
 		targetContainer = AutoMC.getAutoMC().containerHandler.getBestContainerWith(targetItems[0], remaining);
@@ -76,7 +77,7 @@ public class GrabItemsFromChestCommand extends ResourceTask {
 	}
 
 	@Override
-	protected void onFinish() {
+	protected void onResourceGoalFinish() {
 		// TODO: AutoMC.getAutoMC().player.closeContainer();
 		AutoMC.getAutoMC().getBaritone().getCustomGoalProcess().onLostControl();
 		AutoMC.getAutoMC().getBaritone().getGetToBlockProcess().onLostControl();

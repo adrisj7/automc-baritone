@@ -11,7 +11,10 @@ public abstract class Task {
 
 	private boolean hasInitedYet;
 	private boolean quitFlag = false;
+	private boolean interrupted = false;
 
+	private boolean paused = false;
+	
 	// How far we are in the "command" chain.
 	// Useful for visualizing the command "tree" (it's not really a tree) during debugging.
 	// By default we're at depth zero. If we were called from a parent task our depth will be adjusted.
@@ -25,18 +28,24 @@ public abstract class Task {
 	public void reset() {
 		hasInitedYet = false;
 		quitFlag = false;
+		interrupted =  false;
 	}
 
 	// Only run this if you're sure it's supposed to run.
 	// If not, you will keep re-initializing this task.
 	public boolean runUpdate(LoopState state) {
+		if (paused) {
+			return false;
+		}
 		if (!hasInitedYet) {
+			reset();
 			hasInitedYet = true;
 			onInit();
 		}
 		if (isDone() || quitFlag) {
 			onFinish();
 			reset();
+			quitFlag = true;
 			return true;
 		}
 		onTick(state);
@@ -45,12 +54,27 @@ public abstract class Task {
 
 	// Interrupts the task
 	public void interrupt() {
+		interrupted = true;
 		onInterrupt();
+	}
+	
+	public void pause() {
+		paused = true;
+	}
+	public void unpause() {
+		paused = false;
+	}
+	public boolean isPaused() {
+		return paused;
+	}
+	
+	public boolean isActive() {
+		return !quitFlag && !interrupted;
 	}
 
 	protected abstract void onInit();
 	protected abstract void onTick(LoopState state);
-	protected abstract boolean isDone();
+	public abstract boolean isDone();
 	protected abstract void onFinish();
 
 	/**
@@ -64,7 +88,7 @@ public abstract class Task {
 
 	// This MUST be defined so that the goal system can properly function.
 	// Goals create new task objects repeatedly, and it has to KNOW if the new object has the same task.
-	protected abstract boolean areEqual(Task t);
+	public abstract boolean areEqual(Task t);
 
 	@Override
 	public boolean equals(Object obj) {

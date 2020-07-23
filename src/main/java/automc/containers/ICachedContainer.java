@@ -21,7 +21,7 @@ public interface ICachedContainer {
 	public Iterable<CachedItems> getSlots();
 
 	public BlockPos getPosition();
-	public double getScore(Vec3d playerPos, Item item, int maxNeeded);
+	public double getScore(Vec3d playerPos, String item, int maxNeeded);
 
 	public void resetCache();
 	public void addItem(ItemStack stack);

@@ -49,6 +49,24 @@ public class AutoMCMixinMinecraft {
         }
         */
     }
+    @Inject(
+            method = "runTickKeyboard",
+            at = @At("RETURN")
+    )
+    private void runPreTick(CallbackInfo ci) {
+    	/*
+        final BiFunction<EventState, TickEvent.Type, TickEvent> tickProvider = TickEvent.createNextProvider();
+
+        for (IBaritone baritone : BaritoneAPI.getProvider().getAllBaritones()) {
+
+            TickEvent.Type type = baritone.getPlayerContext().player() != null && baritone.getPlayerContext().world() != null
+                    ? TickEvent.Type.IN
+                    : TickEvent.Type.OUT;
+
+            baritone.getGameEventHandler().onTick(tickProvider.apply(EventState.PRE, type));
+        }
+        */
+    }
     
 	
 	@Inject(

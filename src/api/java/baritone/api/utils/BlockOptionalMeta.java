@@ -17,23 +17,58 @@
 
 package baritone.api.utils;
 
-import baritone.api.utils.accessor.IItemStack;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.*;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+
+import baritone.api.utils.accessor.IItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockBanner;
+import net.minecraft.block.BlockBed;
+import net.minecraft.block.BlockBrewingStand;
+import net.minecraft.block.BlockButton;
+import net.minecraft.block.BlockChorusPlant;
+import net.minecraft.block.BlockDirt;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.block.BlockDoublePlant;
+import net.minecraft.block.BlockFence;
+import net.minecraft.block.BlockFire;
+import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockLever;
+import net.minecraft.block.BlockLog;
+import net.minecraft.block.BlockPane;
+import net.minecraft.block.BlockQuartz;
+import net.minecraft.block.BlockRailBase;
+import net.minecraft.block.BlockRedstoneWire;
+import net.minecraft.block.BlockSapling;
+import net.minecraft.block.BlockSkull;
+import net.minecraft.block.BlockSlab;
+import net.minecraft.block.BlockStairs;
+import net.minecraft.block.BlockStandingSign;
+import net.minecraft.block.BlockStem;
+import net.minecraft.block.BlockTrapDoor;
+import net.minecraft.block.BlockTripWire;
+import net.minecraft.block.BlockVine;
+import net.minecraft.block.BlockWall;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 
 public final class BlockOptionalMeta {
 
@@ -47,6 +82,14 @@ public final class BlockOptionalMeta {
     private static final Map<Object, Object> normalizations;
 
     public BlockOptionalMeta(@Nonnull Block block, @Nullable Integer meta) {
+
+    	// TODO: This is kinda dumb but ehhhh
+    	/*
+    	if (block == Blocks.LIT_FURNACE) {
+    		System.out.println("BOOM");
+        	block = Blocks.FURNACE;
+        }
+        */
         this.block = block;
         this.noMeta = meta == null;
         this.meta = noMeta ? 0 : meta;
@@ -202,6 +245,14 @@ public final class BlockOptionalMeta {
     public static IBlockState normalize(IBlockState state) {
         IBlockState newState = state;
 
+        /*
+        // LIT FURNACE CHECK
+        // Sorry, this is driving me crazy.
+        if (state.getBlock() == Blocks.LIT_FURNACE) {
+        	return Blocks.FURNACE.getDefaultState();
+        }
+        */
+
         for (IProperty<?> property : state.getProperties().keySet()) {
             Class<?> valueClass = property.getValueClass();
             if (normalizations.containsKey(property)) {
@@ -280,11 +331,21 @@ public final class BlockOptionalMeta {
     }
 
     public boolean matches(@Nonnull Block block) {
+        // LIT FURNACE CHECK
+        // Sorry, I know this will add time to everything and it's really stupid but this is driving me crazy.
+        if (this.block == Blocks.FURNACE && block == Blocks.LIT_FURNACE) {
+        	return true;
+        }
         return block == this.block;
     }
 
     public boolean matches(@Nonnull IBlockState blockstate) {
         Block block = blockstate.getBlock();
+        // LIT FURNACE CHECK
+        // Sorry, I know this will add time to everything and it's really stupid but this is driving me crazy.
+        if (this.block == Blocks.FURNACE && block == Blocks.LIT_FURNACE) {
+        	return true;
+        }
         return block == this.block && stateHashes.contains(blockstate.hashCode());
     }
 

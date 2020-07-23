@@ -222,7 +222,9 @@ public final class GetToBlockProcess extends BaritoneProcessHelper implements IG
         if (!Baritone.settings().rightClickContainerOnArrival.value) {
             return false;
         }
-        return block == Blocks.CRAFTING_TABLE || block == Blocks.FURNACE || block == Blocks.ENDER_CHEST || block == Blocks.CHEST || block == Blocks.TRAPPED_CHEST;
+        // I ADDED IN the enchanting table so it works for "DoStuffInContainerCommand". TODO: Remove this insertion.
+        // I ALSO added in beds cause bad habits beget more bad habits.
+        return block == Blocks.CRAFTING_TABLE || block == Blocks.FURNACE || block == Blocks.ENDER_CHEST || block == Blocks.CHEST || block == Blocks.TRAPPED_CHEST || block == Blocks.ENCHANTING_TABLE || block == Blocks.BED;
     }
 
     private boolean blockOnTopMustBeRemoved(Block block) {

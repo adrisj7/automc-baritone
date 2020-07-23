@@ -9,8 +9,10 @@
     "dirt": 2,
     "stick": 2,
     "planks": 5,
+    "log": 10,
     "cobblestone": 2,
     "iron_ingot": 100,
+    "crafting_table": 10,
     "diamond": 400,
     "obsidian": 400
   }

@@ -4,6 +4,7 @@ import automc.AutoMC;
 import automc.definitions.ContainerType;
 import automc.tasksystem.Task;
 import automc.tasksystem.TaskInstant;
+import automc.utility.ItemUtil;
 import net.minecraft.item.crafting.IRecipe;
 
 public class CraftRecipeInHandTask extends TaskInstant {
@@ -27,8 +28,8 @@ public class CraftRecipeInHandTask extends TaskInstant {
 	}
 
 	@Override
-	protected boolean areEqual(Task t) {
+	public boolean areEqual(Task t) {
 		if (!(t instanceof CraftRecipeInHandTask)) return false;
-		return recipe.equals(((CraftRecipeInHandTask) t).recipe);
+		return ItemUtil.recipesEqual(recipe, ((CraftRecipeInHandTask)t).recipe);
 	}
 }

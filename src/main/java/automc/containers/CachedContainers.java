@@ -13,10 +13,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.chunk.Chunk;
 
 // Serializable.
 public class CachedContainers {
@@ -34,9 +34,8 @@ public class CachedContainers {
 		containerItemMap = new HashMap<String, Set<ICachedContainer>>();
 	}
 
-	public ICachedContainer getBestContainerWith(Item item, int maxNeeded) {
-		String name = ItemUtil.getItemId(item);
-		if (!containerItemMap.containsKey(name)) return null;
+	public ICachedContainer getBestContainerWith(String item, int maxNeeded) {
+		if (!containerItemMap.containsKey(item)) return null;
 
 		Vec3d playerPos = Minecraft.getMinecraft().player.getPositionVector();
 
@@ -46,7 +45,7 @@ public class CachedContainers {
 		//		(number of item * item work) - distance
 		double maxScore = -Double.POSITIVE_INFINITY;
 		ICachedContainer bestContainer = null;
-		for (ICachedContainer c : containerItemMap.get(name)) {
+		for (ICachedContainer c : containerItemMap.get(item)) {
 			double score = c.getScore(playerPos, item, maxNeeded);
 
 			//Logger.debug(this, "Found chest with item at " + c.getPosition() + " with score: " + score);
@@ -92,7 +91,7 @@ public class CachedContainers {
 				// Ignore air/empty.
 				continue;
 			}
-			Logger.log("     STACK: " + ItemUtil.getItemId(stack.getItem()) + ", " + stack.getCount());
+			//Logger.log("     STACK: " + ItemUtil.getItemId(stack.getItem()) + ", " + stack.getCount());
 			c.addItem(stack);
 			String id = ItemUtil.getItemId(stack.getItem());
 			if (!containerItemMap.containsKey(id)) {
@@ -120,7 +119,9 @@ public class CachedContainers {
 
 	public void cleanup() {
 		// Check all container positions. If the chunk is loaded and the block is not a chest, unload it.
-		for (BlockPos pos : containerPositionMap.keySet()) {
+		Set<BlockPos> cset = containerPositionMap.keySet();
+		HashSet<BlockPos> copyset = new HashSet<BlockPos>(cset);
+		for (BlockPos pos : copyset) {
 			if (!containerExistsAt(pos)) {
 				removeContainer(pos);
 			}
@@ -158,16 +159,20 @@ public class CachedContainers {
 			containers.remove(c);
 		}
 	}
-	
+
 	private boolean containerExistsAt(BlockPos pos) {
-		if (!Minecraft.getMinecraft().world.getChunk(pos).isLoaded()) {
-			// It's not in the chunk, we assume it's true.
+		try {
+			Chunk chunk = Minecraft.getMinecraft().world.getChunk(pos); 
+			if (chunk == null || !chunk.isLoaded()) {
+				// It's not in the chunk, we assume it's true.
+				return containerPositionMap.containsKey(pos);
+			}
+			IBlockState bs = Minecraft.getMinecraft().world.getBlockState(pos);
+			// TODO: Also check for Furnace...
+			return Block.getIdFromBlock(bs.getBlock()) == Block.getIdFromBlock(ItemUtil.getBlock("chest"));
+		} catch (NullPointerException e) {
 			return containerPositionMap.containsKey(pos);
 		}
-		IBlockState bs = Minecraft.getMinecraft().world.getBlockState(pos);
-		// TODO: Also check for Furnace...
-		return Block.getIdFromBlock(bs.getBlock()) == Block.getIdFromBlock(ItemUtil.getBlock("chest"));
-
 	}
 
 }

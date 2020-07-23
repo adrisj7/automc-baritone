@@ -41,12 +41,12 @@ public class ExampleChestTask extends TaskGoal {
 	}
 
 	@Override
-	protected boolean isDone() {
+	public boolean isDone() {
 		return grabbed;
 	}
 
 	@Override
-	protected void onFinish() {
+	protected void onGoalFinish() {
 		AutoMC.getAutoMC().getBaritone().getGetToBlockProcess().onLostControl();
 	}
 
@@ -56,7 +56,7 @@ public class ExampleChestTask extends TaskGoal {
 	}
 
 	@Override
-	protected boolean areEqual(Task t) {
+	public boolean areEqual(Task t) {
 		// TODO Auto-generated method stub
 		return false;
 	}
